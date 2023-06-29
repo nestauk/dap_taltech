@@ -1,5 +1,1 @@
-awscli
-pandas
-pyarrow
-fastparquet
-s3fs
+taltechhackweek2023 @ git+https://github.com/nestauk/dap_taltech.git@repo_setup

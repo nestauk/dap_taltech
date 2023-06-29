@@ -1,15 +1,16 @@
 from setuptools import setup, find_packages
+from dap_taltech import PROJECT_DIR
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
-with open("requirements.txt", "r", encoding="utf-8") as fh:
+with open(f"{PROJECT_DIR}/utils/utils_requirements.txt", "r", encoding="utf-8") as fh:
     requirements = fh.read()
 
 setup(
-    name='taltechhackweek2023',
+    name='taltech_utils',
     version='0.0.0',
     license='MIT',
-    description='tutorials for taltech hackweek 2023',
+    description='utils for tutorials for taltech hackweek 2023',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='',
