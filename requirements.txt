@@ -1,0 +1,5 @@
+awscli
+pandas
+pyarrow
+fastparquet
+s3fs
