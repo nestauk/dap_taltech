@@ -1,8 +1,8 @@
 """
 This script contains:
-    - a function to download data from the open dap-taltech s3 bucket.
-    - a class to load data from the local data/ directory that is relevant
-        across tutorials.
+    A class to load data from either a local directory or s3 data that is relevant
+    across tutorials.
+    The methods in the class have detailed docstrings that describe the data.
 """
 import os
 import pandas as pd
