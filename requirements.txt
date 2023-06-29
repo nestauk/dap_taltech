@@ -1,1 +1,5 @@
-taltechhackweek2023 @ git+https://github.com/nestauk/dap_taltech.git@repo_setup
+awscli
+pandas==2.0.3
+pyarrow==12.0.1
+fastparquet==2023.4.0
+s3fs==0.4.2

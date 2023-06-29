@@ -2,5 +2,5 @@
 
 ```
 conda create -n dap_taltech python=3.9
-pip install -r requirements.txt
+pip install git+https://github.com/nestauk/dap_taltech.git
 ```

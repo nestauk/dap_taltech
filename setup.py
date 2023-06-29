@@ -3,7 +3,7 @@ from dap_taltech import PROJECT_DIR
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
-with open(f"{PROJECT_DIR}/utils/utils_requirements.txt", "r", encoding="utf-8") as fh:
+with open(f"requirements.txt", "r", encoding="utf-8") as fh:
     requirements = fh.read()
 
 setup(
