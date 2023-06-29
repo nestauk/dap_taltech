@@ -12,15 +12,6 @@ from dap_taltech import (PROJECT_DIR,
                          BUCKET_NAME,
                          logger)
 
-LOCAL_DATA_DIR = os.path.join(PROJECT_DIR, PUBLIC_DATA_FOLDER_NAME)
-
-
-def download_data():
-    """Download datasets from the open dap-taltech s3 bucket."""
-
-    os.system(f'aws s3 sync s3://{BUCKET_NAME}/data {LOCAL_DATA_DIR}')
-
-
 class DataGetter(object):
     """Class to load datasets relevant across different tutorials for TalTech HackWeek 2023.
 
@@ -46,13 +37,13 @@ class DataGetter(object):
         else:
             logger.setLevel('ERROR')
         if self.local:
-            logger.info(f'Loading data from {LOCAL_DATA_DIR}/')
-            self.data_dir = LOCAL_DATA_DIR
+            self.data_dir = os.path.join(PROJECT_DIR, PUBLIC_DATA_FOLDER_NAME)
+            logger.info(f'Loading data from {self.data_dir}/')
             if not os.path.exists(self.data_dir):
                 logger.warning(
                     "Neccessary data files are not downloaded. Downloading neccessary files..."
                 )
-                download_data()
+                os.system(f'aws s3 sync s3://{BUCKET_NAME}/data {self.data_dir}')
         else:
             self.data_dir = f"s3://{os.path.join(BUCKET_NAME, PUBLIC_DATA_FOLDER_NAME)}"
             logger.info(f"Loading data from open {BUCKET_NAME} s3 bucket.")
