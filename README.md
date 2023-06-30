@@ -2,7 +2,7 @@
 
 **All things TalTech Hackweek 2023 ft. tutorials, utilities and resources ⛏️**
 
-The main purpose of this repo is to store tutorials relevant to the Nesta TalTech hackweek 2023. There are also utilities functions (i.e. data getters) that you can install in your environment that will be relevant _across_ tutorials and for potentially for you project. 
+The main purpose of this repo is to store tutorials relevant to the Nesta TalTech hackweek 2023. There are also utilities functions (i.e. data getters) that you can install in your environment that will be relevant _across_ tutorials and (potentially) you project. 
 
 ## 🧰 Set up
 
