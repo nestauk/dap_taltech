@@ -1,8 +1,17 @@
 """
 This script contains:
     A class to load data from either a local directory or s3 data that is relevant
-    across tutorials.
-    The methods in the class have detailed docstrings that describe the data.
+        across tutorials.
+    The methods in the class have detailed docstrings that act as a pseudo data 
+        dictionary to describe the data.
+
+To use the class:
+    
+    from dap_taltech.utils.data_getters import DataGetter
+
+    dg = DataGetter(local=True)
+    estonian_patents = dg.get_estonian_patents()
+
 """
 import os
 import pandas as pd
@@ -27,10 +36,10 @@ class DataGetter(object):
 
     def __init__(
         self,
-        verbose=True,
+        verbose=True
         local=True
     ):
-        self.verbose = verbose,
+        self.verbose = verbose
         self.local = local
         if self.verbose:
             logger.setLevel('INFO')
@@ -48,7 +57,7 @@ class DataGetter(object):
             self.data_dir = f"s3://{os.path.join(BUCKET_NAME, PUBLIC_DATA_FOLDER_NAME)}"
             logger.info(f"Loading data from open {BUCKET_NAME} s3 bucket.")
 
-    def get_estonian_patents(self):
+    def get_estonian_patents(self) -> pd.DataFrame:
         """Get estonian patents data.
 
         This data was collected using Google Patents. A patent is considered Estonian
@@ -60,6 +69,9 @@ class DataGetter(object):
             - family_id: unique identifier for each patent family
             - title_localized: title of the patent
             - abstract_localized: abstract of the patent
+        
+        Returns:
+            pd.DataFrame: A pandas dataframe containing estonian patents data.
         """
         estonian_patents_path = os.path.join(
             self.data_dir, "patents_clean_EE.parquet")
