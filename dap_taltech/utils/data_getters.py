@@ -36,7 +36,7 @@ class DataGetter(object):
 
     def __init__(
         self,
-        verbose=True
+        verbose=True,
         local=True
     ):
         self.verbose = verbose
