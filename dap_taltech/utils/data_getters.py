@@ -57,6 +57,18 @@ class DataGetter(object):
             self.data_dir = f"s3://{os.path.join(BUCKET_NAME, PUBLIC_DATA_FOLDER_NAME)}"
             logger.info(f"Loading data from open {BUCKET_NAME} s3 bucket.")
 
+    def _fetch_data(self, file_name: str) -> pd.DataFrame:
+        """Fetch data from local directory or s3 bucket.
+
+        Args:
+            file_name (str): Name of the file to fetch.
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing the data.
+        """        
+        file_path = os.path.join(self.data_dir, file_name)
+        return pd.read_parquet(file_path)
+
     def get_estonian_patents(self) -> pd.DataFrame:
         """Get estonian patents data.
 
@@ -73,7 +85,25 @@ class DataGetter(object):
         Returns:
             pd.DataFrame: A pandas dataframe containing estonian patents data.
         """
-        estonian_patents_path = os.path.join(
-            self.data_dir, "patents_clean_EE.parquet")
+        return self._fetch_data("patents_clean_EE.parquet")
+    
+    def get_taltech_articles(self) -> pd.DataFrame:
+        """Get TalTech research articles data.
 
-        return pd.read_parquet(estonian_patents_path)
+        This data was collected using OpenAlex.
+
+        The data includes information such as:
+            - id: unique identifier for each article
+            - display_name: title of the article
+            - publication_date: date of publication
+            - primary_location: dictionary containing information about the location of the article
+            - authors: list of dictionaries containing information about the authors of the article
+            - cited_by_count: number of times the article has been cited
+            - counts_by_year: dictionary containing the number of times the article has been cited by year
+            - concepts: list of dictionaries containing information about the key concepts in the article
+            - abstract: abstract of the article
+        
+        Returns:
+            pd.DataFrame: A pandas dataframe containing TalTech articles data.
+        """
+        return self._fetch_data("articles_clean_TT.parquet")
