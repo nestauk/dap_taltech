@@ -105,7 +105,7 @@ def main() -> None:
     """    
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--bucket", type=str, default="dap-taltech", help="The name of the bucket.")
+    parser.add_argument("--bucket", type=str, default="dap-taltech", help="The name of the bucket. Type None for local download")
     parser.add_argument("--key", type=str, default="data/articles_clean_TT.parquet", help="The key of the object.")
     args = parser.parse_args()
 
@@ -116,8 +116,11 @@ def main() -> None:
         lambda df: df.reset_index(drop=True),
         lambda df: df.assign(publication_date=lambda df: pd.to_datetime(df["publication_date"])),
     )
-
-    save_to_s3(df, bucket=args.bucket, key=args.key)
+    if args.bucket != "None":
+        save_to_s3(df, bucket=args.bucket, key=args.key)
+    else:
+        args.key = args.key.split("/")[1]
+        df.to_parquet(args.key)
 
 if __name__ == "__main__":
     main()
