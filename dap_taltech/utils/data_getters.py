@@ -2,11 +2,11 @@
 This script contains:
     A class to load data from either a local directory or s3 data that is relevant
         across tutorials.
-    The methods in the class have detailed docstrings that act as a pseudo data 
+    The methods in the class have detailed docstrings that act as a pseudo data
         dictionary to describe the data.
 
 To use the class:
-    
+
     from dap_taltech.utils.data_getters import DataGetter
 
     dg = DataGetter(local=True)
@@ -20,6 +20,7 @@ from dap_taltech import (PROJECT_DIR,
                          PUBLIC_DATA_FOLDER_NAME,
                          BUCKET_NAME,
                          logger)
+
 
 class DataGetter(object):
     """Class to load datasets relevant across different tutorials for TalTech HackWeek 2023.
@@ -52,7 +53,8 @@ class DataGetter(object):
                 logger.warning(
                     "Neccessary data files are not downloaded. Downloading neccessary files..."
                 )
-                os.system(f'aws s3 sync s3://{BUCKET_NAME}/data {self.data_dir}')
+                os.system(
+                    f'aws s3 sync s3://{BUCKET_NAME}/data {self.data_dir}')
         else:
             self.data_dir = f"s3://{os.path.join(BUCKET_NAME, PUBLIC_DATA_FOLDER_NAME)}"
             logger.info(f"Loading data from open {BUCKET_NAME} s3 bucket.")
@@ -65,14 +67,15 @@ class DataGetter(object):
 
         Returns:
             pd.DataFrame: A pandas dataframe containing the data.
-        """        
+        """
         file_path = os.path.join(self.data_dir, file_name)
         if file_name.endswith('.parquet'):
             return pd.read_parquet(file_path)
         elif file_name.endswith('.csv'):
             return pd.read_csv(file_path)
         else:
-            logger.error(f"File type {file_name.split('.')[-1]} is not supported.")
+            logger.error(
+                f"File type {file_name.split('.')[-1]} is not supported.")
 
     def get_estonian_patents(self) -> pd.DataFrame:
         """Get estonian patents data.
@@ -86,12 +89,12 @@ class DataGetter(object):
             - family_id: unique identifier for each patent family
             - title_localized: title of the patent
             - abstract_localized: abstract of the patent
-        
+
         Returns:
             pd.DataFrame: A pandas dataframe containing estonian patents data.
         """
         return self._fetch_data("patents_clean_EE.parquet")
-    
+
     def get_taltech_articles(self) -> pd.DataFrame:
         """Get TalTech research articles data.
 
@@ -107,17 +110,17 @@ class DataGetter(object):
             - counts_by_year: dictionary containing the number of times the article has been cited by year
             - concepts: list of dictionaries containing information about the key concepts in the article
             - abstract: abstract of the article
-        
+
         Returns:
             pd.DataFrame: A pandas dataframe containing TalTech articles data.
         """
         return self._fetch_data("articles_clean_TT.parquet")
-    
+
     def get_armenian_job_adverts(self) -> pd.DataFrame:
         """Get Armenian job adverts data posted from 2004 to 2015.
-        
+
         This data was sourced from the following website: https://www.kaggle.com/datasets/madhab/jobposts
-        
+
         The data includes information such as:
             - jobpost: the original job post
             - Title: the title of the job
