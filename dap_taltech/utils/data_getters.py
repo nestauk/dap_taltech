@@ -87,7 +87,7 @@ class DataGetter(object):
         """
         return self._fetch_data("patents_clean_EE.parquet")
     
-    def get_taltech_articles(self) -> pd.DataFrame:
+    def get_taltech_articles(self, institution: str = "TT") -> pd.DataFrame:
         """Get TalTech research articles data.
 
         This data was collected using OpenAlex.
@@ -102,8 +102,12 @@ class DataGetter(object):
             - counts_by_year: dictionary containing the number of times the article has been cited by year
             - concepts: list of dictionaries containing information about the key concepts in the article
             - abstract: abstract of the article
+
+        Args:
+            institution (str, optional): Institution to filter articles by. Must be either TT or EE.
         
         Returns:
             pd.DataFrame: A pandas dataframe containing TalTech articles data.
         """
-        return self._fetch_data("articles_clean_TT.parquet")
+        assert institution in ["TT", "EE"], "Institution must be either TT (TalTech) or EE (Estonia)."
+        return self._fetch_data(f"articles_clean_{institution}.parquet")
