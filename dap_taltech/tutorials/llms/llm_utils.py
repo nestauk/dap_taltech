@@ -61,7 +61,7 @@ def clean_date(date: str) -> pd._libs.tslibs.timestamps.Timestamp:
         date (str): string of date
 
     Returns:
-        pd.datetime: cleaned date
+        pd._libs.tslibs.timestamps.Timestamp: date in timestamp format
     """
     ends_in_year = re.search(r'\b20\d{2}\b', date)
     date_clean = pd.to_datetime(
