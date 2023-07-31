@@ -67,7 +67,12 @@ class DataGetter(object):
             pd.DataFrame: A pandas dataframe containing the data.
         """        
         file_path = os.path.join(self.data_dir, file_name)
-        return pd.read_parquet(file_path)
+        if file_name.endswith('.parquet'):
+            return pd.read_parquet(file_path)
+        elif file_name.endswith('.csv'):
+            return pd.read_csv(file_path)
+        else:
+            logger.error(f"File type {file_name.split('.')[-1]} is not supported.")
 
     def get_estonian_patents(self) -> pd.DataFrame:
         """Get estonian patents data.
@@ -107,3 +112,24 @@ class DataGetter(object):
             pd.DataFrame: A pandas dataframe containing TalTech articles data.
         """
         return self._fetch_data("articles_clean_TT.parquet")
+    
+    def get_armenian_job_adverts(self) -> pd.DataFrame:
+        """Get Armenian job adverts data posted from 2004 to 2015.
+        
+        This data was sourced from the following website: https://www.kaggle.com/datasets/madhab/jobposts
+        
+        The data includes information such as:
+            - jobpost: the original job post
+            - Title: the title of the job
+            - Company: the company that posted the job
+            - AnnouncementCode: the announcement code of the job
+            - Term: the term of the job
+            - Eligibility: the eligibility of the job
+            - Audience: the audience of the job
+            - StartDate: the start date of the job
+            - Location: the location of the job
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing Armenian job adverts data.
+        """
+        return self._fetch_data("job_postings.csv")
