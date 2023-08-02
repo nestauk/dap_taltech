@@ -87,8 +87,8 @@ class DataGetter(object):
         """
         return self._fetch_data("patents_clean_EE.parquet")
     
-    def get_taltech_articles(self, institution: str = "TT") -> pd.DataFrame:
-        """Get TalTech research articles data.
+    def get_oa_articles(self, institution: str = "TT") -> pd.DataFrame:
+        """Get research articles data.
 
         This data was collected using OpenAlex.
 

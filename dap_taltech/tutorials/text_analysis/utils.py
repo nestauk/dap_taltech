@@ -8,6 +8,7 @@ import torch
 from sklearn.manifold import TSNE
 from sklearn.cluster import DBSCAN
 from transformers import AutoTokenizer, AutoModel
+from termcolor import colored, cprint
 
 def hist_plot(pubdataframe: pd.DataFrame, citdataframe:pd.DataFrame, bins: int = 30) -> alt.Chart:
     """Plot the distribution of publications over time and the distribution of citations.
@@ -268,3 +269,41 @@ def ts_authors_plot(dataframe: pd.DataFrame, dataframe_year: pd.DataFrame) -> al
     chart = alt.hconcat(chart1, chart2)
 
     return chart
+
+
+
+def parse_text(docs, data_sample, text, idx_voc, z_d_n):
+    ws = []
+    for item in docs[text]:
+        word = idx_voc[item]
+        ws.append(word)
+    f = list(zip(ws, z_d_n[text]))
+
+    a_dict = {}
+    for i in range(11):
+        a_dict[i] = [x[0] for x in f if x[1] == i] 
+
+    remove_punct = str.maketrans('','','!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~“”’')
+    h = (
+        data_sample[text]
+        .lower()
+        .translate(remove_punct)
+        .split()
+    )
+    
+    word_join = [
+        colored(x, 'grey') if x in a_dict[0] else 
+        colored(x, 'red') if x in a_dict[1] else 
+        colored(x, 'green') if x in a_dict[2] else 
+        colored(x, 'yellow') if x in a_dict[3] else 
+        colored(x, 'blue') if x in a_dict[4] else 
+        colored(x, 'magenta') if x in a_dict[5] else 
+        colored(x, 'cyan') if x in a_dict[6] else
+        colored(x, 'cyan', 'on_grey') if x in a_dict[7] else
+        colored(x, 'blue', 'on_yellow') if x in a_dict[8] else
+        colored(x, 'cyan', 'on_green') if x in a_dict[9] else
+        
+        x for x in h
+    ]
+
+    print(' '.join(word_join))
