@@ -21,3 +21,4 @@ tomotopy==0.12.5
 tmplot==0.1.0
 pyLDAvis==3.4.1
 bertopic==0.15.0
+tensorboard==2.13.0
