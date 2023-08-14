@@ -104,10 +104,11 @@ class DataGetter(object):
             - abstract: abstract of the article
 
         Args:
-            institution (str, optional): Institution to filter articles by. Must be either TT or EE.
+            institution (str, optional): Institution to filter articles by. Must be either TT, TT_p, or EE.
         
         Returns:
             pd.DataFrame: A pandas dataframe containing TalTech articles data.
         """
-        assert institution in ["TT", "EE"], "Institution must be either TT (TalTech) or EE (Estonia)."
-        return self._fetch_data(f"articles_clean_{institution}.parquet")
+        assert institution in ["TT", "TT_p", "EE"], "Institution must be either TT (TalTech), TT_p (preprocessed TT) or EE (Estonia)."
+        prefix = "articles_clean" if institution != "TT_p" else "articles_preprocessed"
+        return self._fetch_data(f"{prefix}_{institution[:2]}.parquet")
