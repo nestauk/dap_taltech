@@ -136,3 +136,22 @@ class DataGetter(object):
             pd.DataFrame: A pandas dataframe containing Armenian job adverts data.
         """
         return self._fetch_data("job_postings.csv")
+    
+    def get_esco_skills_taxonomy(self) -> pd.DataFrame:
+        """Get the European Commision's skills taxonomy in English.
+        
+        This is a curated dataset based on data from the 
+            following source: https://esco.ec.europa.eu/en/use-esco/download 
+            
+        The dataset includes information such as:
+            - the skill label;
+            - the unique skill identifier; 
+            - skill taxonomy label 
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing the European Commision's 
+            skills taxonomy.
+        """
+        return self._fetch_data("esco_data_formatted.csv")
+    
+    

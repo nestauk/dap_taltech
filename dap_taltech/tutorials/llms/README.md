@@ -1,10 +1,8 @@
 ## 💅 LLM tutorials
 
-This directory contains tutorials related to LLMs. It primarily focuses on the practicalities of building LLM applications. There are two tutorials to follow along with:
+This directory contains tutorials related to LLMs. It primarily focuses on the practicalities of building LLM applications. Currently, there is one tutorial to follow along with: 
 
-1. `basics_of_langchains.ipynb` - This tutorial introduces the basics of LangChain and how to use the library to build LLM applications. It covers prompts, chains, agents and Retrieval Augmented Generation (RAG). There are **🛸 TASK** to complete along the way.
-
-2. `llm_innovation_mapping.ipynb` - This tutorial applies what we learn in `basics_of_langchains.ipynb` to a fictional innovation mapping scenario. It serves as example project inspiration and provides codeblocks to use for your project work later in the hack week. 
+1. `basics_of_langchain.ipynb` - This tutorial introduces the basics of LangChain and how to use the library to build LLM applications. It covers prompts, chains, agents and Retrieval Augmented Generation (RAG). There are **🛸 TASK** to complete along the way.
 
 ### LLM set up
 
