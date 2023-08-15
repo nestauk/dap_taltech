@@ -1,6 +1,6 @@
 # 📺 Deep learning tutorial
 
-This directory contains the related to related to deep learning.
+This directory contains tutorials related to deep learning.
 
 The **goals** of the `deep-learning.ipynb` tutorial are to:
 
