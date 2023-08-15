@@ -276,9 +276,25 @@ def ts_authors_plot(dataframe: pd.DataFrame, dataframe_year: pd.DataFrame) -> al
 
 
 
-def parse_text(docs, data_sample, text, idx_voc, z_d_n):
-    """Parse and colour text.
-    """    
+def parse_text(
+    docs: dict,
+    data_sample: pd.DataFrame,
+    text: str,
+    idx_voc: dict,
+    z_d_n: dict
+) -> str:
+    """Parse the text and colour the words according to their topic assignment.
+
+    Args:
+        docs (dict): The dictionary of documents.
+        data_sample (pd.DataFrame): The dataframe containing the data.
+        text (str): The text to be parsed.
+        idx_voc (dict): The index position of each word in the vocabulary.
+        z_d_n (dict): The topic assignment of each word in each document.
+
+    Returns:
+        str: The parsed text.
+    """       
 
     # Create a dictionary of words and their topic assignments
     ws = []
