@@ -5,3 +5,6 @@ __pycache__/
 
 *.DS_Store
 *.ipynb_checkpoints
+
+#ignore outputs from jupyter notebooks
+runs/

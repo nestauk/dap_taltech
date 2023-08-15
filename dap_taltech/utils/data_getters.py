@@ -19,10 +19,14 @@ from PIL import Image
 import numpy as np
 import pandas as pd
 
+import boto3
+from io import BytesIO
+
 from dap_taltech import (PROJECT_DIR,
                          PUBLIC_DATA_FOLDER_NAME,
                          BUCKET_NAME,
                          logger)
+
 
 class DataGetter(object):
     """Class to load datasets relevant across different tutorials for TalTech HackWeek 2023.
@@ -179,20 +183,31 @@ class DataGetter(object):
         Returns:
             Sequence[Any]: A list of PIL images.
             Sequence[any]: The 224 x 224 x 3 images.
-        """        
-        file_path = os.path.join(self.data_dir, "images")
+        """
+        if self.local:        
+            file_path = os.path.join(self.data_dir, "images")
+            
+            image_list = []
+            for file in os.listdir(file_path):
 
-        image_list = []
+                try:
+                    image = Image.open(os.path.join(file_path, file))
+                    image_list.append(tuple([file, image]))
 
-        for file in os.listdir(file_path):
-
-            try:
-                image = Image.open(os.path.join(file_path, file))
-                image_list.append(tuple([file, image]))
-
-            except:
-                pass
-
+                except:
+                    pass
+        else:
+            s3 = boto3.client('s3')
+            objects = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix="data/images")
+            image_list = []
+            for obj in objects.get('Contents', []):
+                response = s3.get_object(Bucket=BUCKET_NAME, Key=obj['Key'])
+                try:        
+                    image = Image.open(BytesIO(response['Body'].read()))
+                    image_list.append(tuple([obj['Key'], image]))
+                except:
+                    pass
+        
         image_list = sorted(image_list, key=lambda x: int(x[0].split('_')[-1].split('.')[0]))
         
         return image_list
