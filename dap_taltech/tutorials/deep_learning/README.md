@@ -1,4 +1,4 @@
-## 📺 Deep learning tutorial
+# 📺 Deep learning tutorial
 
 This directory contains the related to related to deep learning.
 
