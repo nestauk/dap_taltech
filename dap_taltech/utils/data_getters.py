@@ -14,12 +14,19 @@ To use the class:
 
 """
 import os
+from typing import Sequence, Any
+from PIL import Image
+import numpy as np
 import pandas as pd
+
+import boto3
+from io import BytesIO
 
 from dap_taltech import (PROJECT_DIR,
                          PUBLIC_DATA_FOLDER_NAME,
                          BUCKET_NAME,
                          logger)
+
 
 class DataGetter(object):
     """Class to load datasets relevant across different tutorials for TalTech HackWeek 2023.
@@ -109,6 +116,98 @@ class DataGetter(object):
         Returns:
             pd.DataFrame: A pandas dataframe containing TalTech articles data.
         """
-        assert institution in ["TT", "TT_p", "EE"], "Institution must be either TT (TalTech), TT_p (preprocessed TT) or EE (Estonia)."
+        assert institution in ["TT", "TT_p", "EE"], logger.error("Institution must be either TT (TalTech), TT_p (preprocessed TT) or EE (Estonia).")
         prefix = "articles_clean" if institution != "TT_p" else "articles_preprocessed"
         return self._fetch_data(f"{prefix}_{institution[:2]}.parquet")
+
+    def get_surnames(self) -> pd.DataFrame:
+        """Get surnames data.
+
+        This data was collected using the Estonian Population Register, and 
+        popular German and Ukrainian surnames from the website Forebears.
+
+        The data includes information such as:
+            - surname: surname of the person
+            - origin: origin of the surname
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing surnames data.
+        """
+        return self._fetch_data("surnames.parquet")
+    
+    def get_bike_demand(self) -> pd.DataFrame:
+        """Get bike demand data.
+
+        This data was collected from the Kaggle competition Bike Sharing Demand.
+
+        The data includes information such as:
+            - dteday: date and time of the observation
+            - season: season of the year
+            - yr: year
+            - mnth: month
+            - hr: hour
+            - holiday: whether the day is a holiday or not
+            - workingday: whether the day is a working day or not
+            - weekday: day of the week
+            - weather: weather code
+            - temp: temperature in Celsius
+            - atemp: "feels like" temperature in Celsius
+            - hum: relative humidity
+            - windspeed: wind speed
+            - casual: number of casual users
+            - registered: number of registered users
+            - cnt: total number of users
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing bike demand data.
+        """
+        return self._fetch_data("bike_riding_demand.parquet")
+    
+    def get_image_labels(self) -> pd.DataFrame:
+        """Get estonian images data.
+
+        This data was collected from the website Unsplash.
+
+        The data includes information such as:
+            - image_id: unique identifier for each image
+            - label: label of the image
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing estonian images data.
+        """
+        return self._fetch_data("images/image_labels.parquet")
+    
+    def get_images(self) -> Sequence[Any]:
+        """Get estonian images data.
+
+        Returns:
+            Sequence[Any]: A list of PIL images.
+            Sequence[any]: The 224 x 224 x 3 images.
+        """
+        if self.local:        
+            file_path = os.path.join(self.data_dir, "images")
+            
+            image_list = []
+            for file in os.listdir(file_path):
+
+                try:
+                    image = Image.open(os.path.join(file_path, file))
+                    image_list.append(tuple([file, image]))
+
+                except:
+                    pass
+        else:
+            s3 = boto3.client('s3')
+            objects = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix="data/images")
+            image_list = []
+            for obj in objects.get('Contents', []):
+                response = s3.get_object(Bucket=BUCKET_NAME, Key=obj['Key'])
+                try:        
+                    image = Image.open(BytesIO(response['Body'].read()))
+                    image_list.append(tuple([obj['Key'], image]))
+                except:
+                    pass
+        
+        image_list = sorted(image_list, key=lambda x: int(x[0].split('_')[-1].split('.')[0]))
+        
+        return image_list
