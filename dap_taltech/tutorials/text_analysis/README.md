@@ -22,4 +22,8 @@ python -m spacy download en_core_web_sm
 Some steps in the tutorials use multi-processing and batching for efficiency. If multi-processing does not work in your environment or causes any issues, you can modify the code by removing the batching and the number of processes arguments. The tutorials are designed to work without multi-processing as well, albeit at a slower pace.
 
 ## 🎓 Get Started
+To install the text analysis specific requirements, run the following command:
+
+```pip install -r text_analysis_requirements.txt```
+
 Navigate to the desired notebook and follow the instructions and code blocks. Enjoy your journey through the engaging world of text analysis!
