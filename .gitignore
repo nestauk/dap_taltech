@@ -8,3 +8,5 @@ __pycache__/
 
 #don't push env variables
 *.env 
+#ignore outputs from jupyter notebooks
+runs/
