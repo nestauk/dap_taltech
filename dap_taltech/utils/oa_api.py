@@ -6,9 +6,6 @@ from toolz import pipe
 from typing import Dict, Sequence
 import pandas as pd
 
-# OpenAlex API corresponding to TalTech
-cursor_url_TT = "https://api.openalex.org/works?filter=institutions.id:https://openalex.org/I111112146&cursor={}&mailto=david.ampudia@nesta.org.uk"
-
 logging.basicConfig(level=logging.INFO)
     
 COLUMNS = [

@@ -1,13 +1,14 @@
+"""Utility functions for the text analysis tutorial.
+"""
+from typing import Sequence, Tuple
 import pandas as pd
 import altair as alt
-from toolz import pipe
 import numpy as np
 from sklearn.manifold import TSNE
 from sklearn.cluster import KMeans
 import torch
-from sklearn.manifold import TSNE
-from sklearn.cluster import DBSCAN
 from transformers import AutoTokenizer, AutoModel
+from termcolor import colored
 
 def hist_plot(pubdataframe: pd.DataFrame, citdataframe:pd.DataFrame, bins: int = 30) -> alt.Chart:
     """Plot the distribution of publications over time and the distribution of citations.
@@ -33,7 +34,11 @@ def hist_plot(pubdataframe: pd.DataFrame, citdataframe:pd.DataFrame, bins: int =
 
     # Create the second plot (distribution of citations)
     citations_plot = alt.Chart(citdataframe).mark_bar().encode(
-        alt.X('Number of Citations (Log Scale):Q', bin=alt.Bin(maxbins=bins), title='Number of Citations (Log Scale)'),
+        alt.X(
+            'Number of Citations (Log Scale):Q', 
+            bin=alt.Bin(maxbins=bins), 
+            title='Number of Citations (Log Scale)'
+        ),
         alt.Y('count()', title='Number of Papers')
     ).properties(
         title='Distribution of Citations',
@@ -268,3 +273,96 @@ def ts_authors_plot(dataframe: pd.DataFrame, dataframe_year: pd.DataFrame) -> al
     chart = alt.hconcat(chart1, chart2)
 
     return chart
+
+
+
+def parse_text(
+    docs: dict,
+    data_sample: pd.DataFrame,
+    text: str,
+    idx_voc: dict,
+    z_d_n: dict
+) -> str:
+    """Parse the text and colour the words according to their topic assignment.
+
+    Args:
+        docs (dict): The dictionary of documents.
+        data_sample (pd.DataFrame): The dataframe containing the data.
+        text (str): The text to be parsed.
+        idx_voc (dict): The index position of each word in the vocabulary.
+        z_d_n (dict): The topic assignment of each word in each document.
+
+    Returns:
+        str: The parsed text.
+    """       
+
+    # Create a dictionary of words and their topic assignments
+    ws = []
+    for item in docs[text]:
+        word = idx_voc[item]
+        ws.append(word)
+    
+    # Create a list of tuples of words and their topic assignments
+    f = list(zip(ws, z_d_n[text]))
+
+    # Create a dictionary of topic assignments and their associated words
+    a_dict = {}
+    for i in range(11):
+        a_dict[i] = [x[0] for x in f if x[1] == i] 
+
+    # Parse and colour the text
+    remove_punct = str.maketrans('','','!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~“”’')
+    h = (
+        data_sample[text]
+        .lower()
+        .translate(remove_punct)
+        .split()
+    )
+    
+    # Colour the words
+    word_join = [
+        colored(x, 'grey') if x in a_dict[0] else 
+        colored(x, 'red') if x in a_dict[1] else 
+        colored(x, 'green') if x in a_dict[2] else 
+        colored(x, 'yellow') if x in a_dict[3] else 
+        colored(x, 'blue') if x in a_dict[4] else 
+        colored(x, 'magenta') if x in a_dict[5] else 
+        colored(x, 'cyan') if x in a_dict[6] else
+        colored(x, 'cyan', 'on_grey') if x in a_dict[7] else
+        colored(x, 'blue', 'on_yellow') if x in a_dict[8] else
+        colored(x, 'cyan', 'on_green') if x in a_dict[9] else
+        
+        x for x in h
+    ]
+
+    print(' '.join(word_join))
+
+
+def color_tomotopy_string(longstring: str, tuples: Sequence[Tuple[str, int, float]]) -> str:
+    """Color the words in the text.
+
+    Args:
+        longstring (str): The string to be colored.
+        tuples (Sequence[str, int, float]): The tuples of (word, topic, weight) to be colored.
+
+    Returns:
+        str: The colored string.
+    """    
+    colors = ['grey', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
+    for string in longstring:
+        # if not in tuples
+        if string not in [x[0] for x in tuples]:
+            print(string, end=' ')
+            continue
+        elif string in [x[0] for x in tuples]:
+            color_code = [x[1] for x in tuples if x[0] == string][0]
+            intensity = [x[2] for x in tuples if x[0] == string][0]
+            # Set the color intensity
+            attrs = ['bold'] if intensity >= 0.5 else []
+            # Set the foreground color
+            color = colors[color_code % len(colors)]
+            # Set the background color
+            on_color = 'on_' + colors[(color_code // len(colors)) % len(colors)]
+            # Print the colored string
+            print(colored(string, color, on_color=on_color, attrs=attrs), end=' ')
+    print()
