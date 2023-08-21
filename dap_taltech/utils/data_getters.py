@@ -14,7 +14,7 @@ To use the class:
 
 """
 import os
-from typing import Sequence, Any
+from typing import Sequence, Any, Literal
 from PIL import Image
 import numpy as np
 import pandas as pd
