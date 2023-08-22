@@ -20,6 +20,8 @@ import numpy as np
 import pandas as pd
 
 import boto3
+from botocore import UNSIGNED
+from botocore.config import Config
 from io import BytesIO
 
 from dap_taltech import (PROJECT_DIR,
@@ -64,8 +66,7 @@ class DataGetter(object):
             self.data_dir = f"s3://{os.path.join(BUCKET_NAME, PUBLIC_DATA_FOLDER_NAME)}"
             logger.info(f"Loading data from open {BUCKET_NAME} s3 bucket.")
             # Initialize an S3 client with anonymous access
-            self.s3 = boto3.client('s3', aws_access_key_id='', aws_secret_access_key='')
-
+            self.s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
 
     def _fetch_data(self, file_name: str) -> pd.DataFrame:
         """Fetch data from local directory or s3 bucket.
@@ -89,13 +90,12 @@ class DataGetter(object):
                 return None
         else:
             try:
-                s3_url = f's3://{BUCKET_NAME}/data/{file_name}'
                 response = self.s3_client.get_object(Bucket=BUCKET_NAME, Key=f'data/{file_name}')
                 data = response['Body'].read()
                 if file_format == 'parquet':
-                    return pd.read_parquet(BytesIO(data))
+                    return pd.read_parquet(data)
                 elif file_format == 'csv':
-                    return pd.read_csv(BytesIO(data))
+                    return pd.read_csv(data)
                 else:
                     logger.error(f"Unsupported file format: {file_format}")
                     return None
