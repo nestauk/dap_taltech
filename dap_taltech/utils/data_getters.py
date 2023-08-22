@@ -44,6 +44,7 @@ class DataGetter(object):
         self,
         verbose=True,
         local=True,
+        colab=False
     ):
         self.verbose = verbose
         self.local = local
@@ -51,15 +52,19 @@ class DataGetter(object):
             logger.setLevel('INFO')
         else:
             logger.setLevel('ERROR')
+        if self.colab:
+            PROJECT_DIR = "/content/dap-taltech"
+        else:
+            PROJECT_DIR = PROJECT_DIR
+            
         if self.local:
             self.data_dir = os.path.join(PROJECT_DIR, PUBLIC_DATA_FOLDER_NAME)
             logger.info(f'Loading data from {self.data_dir}/')
-            files = os.listdir(self.data_dir)
-            if len(files) == 0:
+            if not os.path.exists(self.data_dir):
                 logger.warning(
                     "Neccessary data files are not downloaded. Downloading neccessary files..."
                 )
-                os.system(f'aws --no-sign-request --region=eu-west-1 s3 cp s3://{BUCKET_NAME}/data {self.data_dir} --recursive')
+                os.system(f'aws s3 sync s3://{BUCKET_NAME}/data {self.data_dir}')
         else:
             self.data_dir = f"s3://{os.path.join(BUCKET_NAME, PUBLIC_DATA_FOLDER_NAME)}"
             logger.info(f"Loading data from open {BUCKET_NAME} s3 bucket.")
