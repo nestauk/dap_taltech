@@ -63,6 +63,9 @@ class DataGetter(object):
         else:
             self.data_dir = f"s3://{os.path.join(BUCKET_NAME, PUBLIC_DATA_FOLDER_NAME)}"
             logger.info(f"Loading data from open {BUCKET_NAME} s3 bucket.")
+            # Initialize an S3 client with anonymous access
+            self.s3 = boto3.client('s3', aws_access_key_id='', aws_secret_access_key='')
+
 
     def _fetch_data(self, file_name: str) -> pd.DataFrame:
         """Fetch data from local directory or s3 bucket.
@@ -72,9 +75,33 @@ class DataGetter(object):
 
         Returns:
             pd.DataFrame: A pandas dataframe containing the data.
-        """        
-        file_path = os.path.join(self.data_dir, file_name)
-        return pd.read_parquet(file_path)
+        """
+        file_format = file_name.split('.')[-1]
+                
+        if self.local:
+            file_path = os.path.join(self.data_dir, file_name)
+            if file_format == 'parquet':
+                return pd.read_parquet(file_path)
+            elif file_format == 'csv':
+                return pd.read_csv(file_path)
+            else:
+                logger.error(f"Unsupported file format: {file_format}")
+                return None
+        else:
+            try:
+                s3_url = f's3://{BUCKET_NAME}/data/{file_name}'
+                response = self.s3_client.get_object(Bucket=BUCKET_NAME, Key=f'data/{file_name}')
+                data = response['Body'].read()
+                if file_format == 'parquet':
+                    return pd.read_parquet(BytesIO(data))
+                elif file_format == 'csv':
+                    return pd.read_csv(BytesIO(data))
+                else:
+                    logger.error(f"Unsupported file format: {file_format}")
+                    return None
+            except Exception as e:
+                logger.error(f"Error fetching data from S3: {str(e)}")
+                return None
 
     def get_estonian_patents(self) -> pd.DataFrame:
         """Get estonian patents data.
