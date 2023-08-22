@@ -61,7 +61,7 @@ class DataGetter(object):
             if self.path is None:
                 self.data_dir = os.path.join(PROJECT_DIR, PUBLIC_DATA_FOLDER_NAME)
             else:
-                self.path = self.path
+                self.data_dir = self.path
             logger.info(f'Loading data from {self.data_dir}/')
             if not os.path.exists(self.data_dir):
                 logger.warning(
