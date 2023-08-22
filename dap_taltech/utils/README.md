@@ -57,5 +57,7 @@ graph = alt.Chart(data).mark_line().encode(
     color='country'
 )
 
-pl.configure_plots(graph, chart_title="Count of Patents over time", chart_subtitle=["This graph shows", "the number of patents over time"])
+pl.configure_plots(graph, 
+                   chart_title="Count over time by Country", 
+                   chart_subtitle=["This graph shows", "count over time by country"])
 ```
