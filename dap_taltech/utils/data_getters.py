@@ -44,7 +44,6 @@ class DataGetter(object):
         self,
         verbose=True,
         local=True,
-        colab=False
     ):
         self.verbose = verbose
         self.local = local
@@ -52,11 +51,6 @@ class DataGetter(object):
             logger.setLevel('INFO')
         else:
             logger.setLevel('ERROR')
-        if self.colab:
-            PROJECT_DIR = "/content/dap-taltech"
-        else:
-            PROJECT_DIR = PROJECT_DIR
-            
         if self.local:
             self.data_dir = os.path.join(PROJECT_DIR, PUBLIC_DATA_FOLDER_NAME)
             logger.info(f'Loading data from {self.data_dir}/')
