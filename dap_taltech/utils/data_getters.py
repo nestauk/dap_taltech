@@ -11,7 +11,6 @@ To use the class:
 
     dg = DataGetter(local=True)
     estonian_patents = dg.get_estonian_patents()
-
 """
 import os
 from typing import Sequence, Any, Literal
@@ -44,7 +43,7 @@ class DataGetter(object):
     def __init__(
         self,
         verbose=True,
-        local=True
+        local=True,
     ):
         self.verbose = verbose
         self.local = local
@@ -55,11 +54,12 @@ class DataGetter(object):
         if self.local:
             self.data_dir = os.path.join(PROJECT_DIR, PUBLIC_DATA_FOLDER_NAME)
             logger.info(f'Loading data from {self.data_dir}/')
-            if not os.path.exists(self.data_dir):
+            files = os.listdir(self.data_dir)
+            if len(files) == 0:
                 logger.warning(
                     "Neccessary data files are not downloaded. Downloading neccessary files..."
                 )
-                os.system(f'aws s3 sync s3://{BUCKET_NAME}/data {self.data_dir}')
+                os.system(f'aws --no-sign-request --region=eu-west-1 s3 cp s3://{BUCKET_NAME}/data {self.data_dir} --recursive')
         else:
             self.data_dir = f"s3://{os.path.join(BUCKET_NAME, PUBLIC_DATA_FOLDER_NAME)}"
             logger.info(f"Loading data from open {BUCKET_NAME} s3 bucket.")
