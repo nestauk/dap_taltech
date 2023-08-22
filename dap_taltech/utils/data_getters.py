@@ -66,7 +66,7 @@ class DataGetter(object):
             self.data_dir = f"s3://{os.path.join(BUCKET_NAME, PUBLIC_DATA_FOLDER_NAME)}"
             logger.info(f"Loading data from open {BUCKET_NAME} s3 bucket.")
             # Initialize an S3 client with anonymous access
-            self.s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
+            self.s3 = boto3.client('s3', aws_access_key_id='', aws_secret_access_key='', config=Config(signature_version=UNSIGNED))
 
     def _fetch_data(self, file_name: str) -> pd.DataFrame:
         """Fetch data from local directory or s3 bucket.
