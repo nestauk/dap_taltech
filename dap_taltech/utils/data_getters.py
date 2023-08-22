@@ -20,8 +20,6 @@ import numpy as np
 import pandas as pd
 
 import boto3
-from botocore import UNSIGNED
-from botocore.config import Config
 from io import BytesIO
 
 from dap_taltech import (PROJECT_DIR,
@@ -40,22 +38,30 @@ class DataGetter(object):
         Defaults to True.
     local : bool, optional
         If True, load data from local data directory. Else, download data from open dap-taltech s3 bucket.
-
+    path: str, optional
+        If None, load data from the local data directory. Else, define the path and load data from the path.
+        This is helpful if you want to load data in google colab. 
+        Defaults to None.
     """
 
     def __init__(
         self,
         verbose=True,
-        local=True
+        local=True,
+        path=None,
     ):
         self.verbose = verbose
         self.local = local
+        self.path = path
         if self.verbose:
             logger.setLevel('INFO')
         else:
             logger.setLevel('ERROR')
         if self.local:
-            self.data_dir = os.path.join(PROJECT_DIR, PUBLIC_DATA_FOLDER_NAME)
+            if self.path is None:
+                self.data_dir = os.path.join(PROJECT_DIR, PUBLIC_DATA_FOLDER_NAME)
+            else:
+                self.path = self.path
             logger.info(f'Loading data from {self.data_dir}/')
             if not os.path.exists(self.data_dir):
                 logger.warning(
@@ -65,8 +71,6 @@ class DataGetter(object):
         else:
             self.data_dir = f"s3://{os.path.join(BUCKET_NAME, PUBLIC_DATA_FOLDER_NAME)}"
             logger.info(f"Loading data from open {BUCKET_NAME} s3 bucket.")
-            # Initialize an S3 client with anonymous access
-            self.s3 = boto3.client('s3', aws_access_key_id='', aws_secret_access_key='', config=Config(signature_version=UNSIGNED))
 
     def _fetch_data(self, file_name: str) -> pd.DataFrame:
         """Fetch data from local directory or s3 bucket.
@@ -76,32 +80,9 @@ class DataGetter(object):
 
         Returns:
             pd.DataFrame: A pandas dataframe containing the data.
-        """
-        file_format = file_name.split('.')[-1]
-                
-        if self.local:
-            file_path = os.path.join(self.data_dir, file_name)
-            if file_format == 'parquet':
-                return pd.read_parquet(file_path)
-            elif file_format == 'csv':
-                return pd.read_csv(file_path)
-            else:
-                logger.error(f"Unsupported file format: {file_format}")
-                return None
-        else:
-            try:
-                response = self.s3.get_object(Bucket=BUCKET_NAME, Key=f'data/{file_name}')
-                data = response['Body'].read()
-                if file_format == 'parquet':
-                    return pd.read_parquet(data)
-                elif file_format == 'csv':
-                    return pd.read_csv(data)
-                else:
-                    logger.error(f"Unsupported file format: {file_format}")
-                    return None
-            except Exception as e:
-                logger.error(f"Error fetching data from S3: {str(e)}")
-                return None
+        """        
+        file_path = os.path.join(self.data_dir, file_name)
+        return pd.read_parquet(file_path)
 
     def get_estonian_patents(self) -> pd.DataFrame:
         """Get estonian patents data.
