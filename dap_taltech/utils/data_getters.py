@@ -90,7 +90,7 @@ class DataGetter(object):
                 return None
         else:
             try:
-                response = self.s3_client.get_object(Bucket=BUCKET_NAME, Key=f'data/{file_name}')
+                response = self.s3.get_object(Bucket=BUCKET_NAME, Key=f'data/{file_name}')
                 data = response['Body'].read()
                 if file_format == 'parquet':
                     return pd.read_parquet(data)
