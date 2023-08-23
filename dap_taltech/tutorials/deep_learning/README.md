@@ -9,7 +9,7 @@ The **goals** of the `deep-learning.ipynb` tutorial are to:
 3. Explore how more advanced network structures can be leveraged to perform time series analysis, and how convolutional layers impact the performance of neural networks on computer vision tasks.
 4. Load pre-trained language models from huggingface and use transfer learning to showcase NLP applications.
 
-🎓 Get Started
+## 🎓 Get Started
 
 To install the deep learning specific requirements, run the following command:
 
