@@ -6,5 +6,7 @@ __pycache__/
 *.DS_Store
 *.ipynb_checkpoints
 
+#don't push env variables
+*.env 
 #ignore outputs from jupyter notebooks
 runs/

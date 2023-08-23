@@ -211,3 +211,41 @@ class DataGetter(object):
         image_list = sorted(image_list, key=lambda x: int(x[0].split('_')[-1].split('.')[0]))
         
         return image_list
+
+    def get_armenian_job_adverts(self) -> pd.DataFrame:
+        """Get Armenian job adverts data posted from 2004 to 2015.
+
+        This data was sourced from the following website: https://www.kaggle.com/datasets/madhab/jobposts
+
+        The data includes information such as:
+            - jobpost: the original job post
+            - Title: the title of the job
+            - Company: the company that posted the job
+            - AnnouncementCode: the announcement code of the job
+            - Term: the term of the job
+            - Eligibility: the eligibility of the job
+            - Audience: the audience of the job
+            - StartDate: the start date of the job
+            - Location: the location of the job
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing Armenian job adverts data.
+        """
+        return self._fetch_data("job_postings.csv")
+    
+    def get_esco_skills_taxonomy(self) -> pd.DataFrame:
+        """Get the European Commision's skills taxonomy in English.
+        
+        This is a curated dataset based on data from the 
+            following source: https://esco.ec.europa.eu/en/use-esco/download 
+            
+        The dataset includes information such as:
+            - the skill label;
+            - the unique skill identifier; 
+            - skill taxonomy label 
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing the European Commision's 
+            skills taxonomy.
+        """
+        return self._fetch_data("esco_data_formatted.csv")
