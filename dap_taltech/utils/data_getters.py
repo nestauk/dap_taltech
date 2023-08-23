@@ -37,22 +37,30 @@ class DataGetter(object):
         Defaults to True.
     local : bool, optional
         If True, load data from local data directory. Else, download data from open dap-taltech s3 bucket.
-
+    path: str, optional
+        If None, load data from the local data directory. Else, define the path and load data from the path.
+        This is helpful if you want to load data in google colab. 
+        Defaults to None.
     """
 
     def __init__(
         self,
         verbose=True,
         local=True,
+        path=None,
     ):
         self.verbose = verbose
         self.local = local
+        self.path = path
         if self.verbose:
             logger.setLevel('INFO')
         else:
             logger.setLevel('ERROR')
         if self.local:
-            self.data_dir = os.path.join(PROJECT_DIR, PUBLIC_DATA_FOLDER_NAME)
+            if self.path is None:
+                self.data_dir = os.path.join(PROJECT_DIR, PUBLIC_DATA_FOLDER_NAME)
+            else:
+                self.data_dir = self.path
             logger.info(f'Loading data from {self.data_dir}/')
             if not os.path.exists(self.data_dir):
                 logger.warning(
