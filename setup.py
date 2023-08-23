@@ -15,7 +15,7 @@ setup(
     long_description_content_type="text/markdown",
     url='',
     packages=find_packages(
-        exclude=["data", "tutorials"]
+        exclude=["data"] #include tutorials folder to load utils from tutorials
     ),
     install_requires=[requirements],
     python_requires='>=3.9',
