@@ -1,0 +1,3 @@
+statsmodels==0.14.0
+prophet
+scikit-learn==1.3.0

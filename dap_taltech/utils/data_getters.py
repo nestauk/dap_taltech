@@ -11,10 +11,9 @@ To use the class:
 
     dg = DataGetter(local=True)
     estonian_patents = dg.get_estonian_patents()
-
 """
 import os
-from typing import Sequence, Any
+from typing import Sequence, Any, Literal
 from PIL import Image
 import numpy as np
 import pandas as pd
@@ -257,3 +256,162 @@ class DataGetter(object):
             skills taxonomy.
         """
         return self._fetch_data("esco_data_formatted.csv")
+
+    def get_horizon2020_iprs(self) -> pd.DataFrame:
+        """
+        Intellectual Property Rights Data from CORDIS - EU
+            research projects under Horizon 2020 (2014-2020).
+
+        The dataset is about projects and their results funded by
+        the European Union under the Horizon 2020 framework programme
+        for research and innovation from 2014 to 2020. This dataset is from
+        the following source:
+            https://data.europa.eu/data/datasets/cordish2020projects?locale=en
+
+        This data includes information such as:
+            - title: the title of the project;
+            - applicantName: the name of the applicant;
+            - applicantDate: the date of the application;
+            - patentType: the type of patent.
+
+        There are ID columns in this dataset to link to other horizon2020 datasets:
+             get_horizon2020_iprs, get_horizon2020_project_publications,
+             get_horizon2020_project_deliverables, get_horizon2020_projects
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing Intellectual Property Rights Data
+                from CORDIS - EU research projects under Horizon 2020 (2014-2020)
+        """
+        return self._fetch_data("cordis_horizon/h2020_project_iprs.csv")
+
+    def get_horizon2020_project_publications(self) -> pd.DataFrame:
+        """Project publications meta-data and links to publications
+            included since May 2019 from CORDIS Data - EU research
+            projects under Horizon 2020 (2014-2020).
+
+        The dataset is about projects and their results funded by
+        the European Union under the Horizon 2020 framework programme
+        for research and innovation from 2014 to 2020. This dataset is from
+        the following source:
+            https://data.europa.eu/data/datasets/cordish2020projects?locale=en
+
+        This data includes information such as:
+            - title: the title of the project;
+            - projectAcronym: the acronym of the project;
+            - legalBasis: the legal basis of the project;
+            - ibsn: the ibsn of the project;
+            - isPublishedAs: Category of how the project is published.
+
+        There are ID columns in this dataset to link to other horizon2020 datasets:
+             get_horizon2020_iprs, get_horizon2020_project_publications,
+             get_horizon2020_project_deliverables, get_horizon2020_projects
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing project publications meta-data and
+                links to publications included since May 2019.
+        """
+        return self._fetch_data(
+            "cordis_horizon/project_publications_clean.csv")
+
+    def get_horizon2020_project_deliverables(self) -> pd.DataFrame:
+        """Project deliverables meta-data and links to deliverables
+        included since May 2019 from CORDIS Data - EU research projects
+        under Horizon 2020 (2014-2020).
+
+        The dataset is about projects and their results funded by
+        the European Union under the Horizon 2020 framework programme
+        for research and innovation from 2014 to 2020. This dataset is from
+        the following source:
+            https://data.europa.eu/data/datasets/cordish2020projects?locale=en
+
+        This data includes information such as:
+            - title: the title of the project;
+            - deliverableType: the type of deliverable;
+            - description: the description of the deliverable;
+            - projectID: the ID of the project.
+            - projectAcronym: the acronym of the project.
+
+        There are ID columns in this dataset to link to other horizon2020 datasets:
+             get_horizon2020_iprs, get_horizon2020_project_publications,
+             get_horizon2020_project_deliverables, get_horizon2020_projects
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing project deliverables meta-data and
+                links to deliverables included since May 2019.
+        """
+        return self._fetch_data(
+            "cordis_horizon/project_deliverables_clean.csv")
+
+    def get_horizon2020_projects(self,
+                                 df_name: Literal['euro_sci_voc',
+                                                  'legal_basis',
+                                                  'organisation',
+                                                  'project',
+                                                  'topics',
+                                                  'web_item',
+                                                  'web_link'] = 'project') -> pd.DataFrame:
+        """Project data from CORDIS - EU research projects under Horizon 2020 (2014-2020).
+
+        This includes datasets on:
+            - euro_sci_voc: classification with the European Science 
+            Vocabulary (EuroSciVoc) ('projectID' in dataset);
+            - legal_basis: legal basis information ('projectID' in dataset);
+            - organisation: participating organisations ('projectID' in dataset);
+            - project: project information ('id' in dataset);
+            - topics: topic information ('projectID' in dataset);
+            - web_item: image and project URLs (NO 'projectID' in dataset);
+            - web_link: project URLs ('projectID' in dataset).
+
+        The dataset is about projects and their results funded by
+        the European Union under the Horizon 2020 framework programme
+        for research and innovation from 2014 to 2020. This dataset is from
+        the following source:
+            https://data.europa.eu/data/datasets/cordish2020projects?locale=en
+
+        There are ID columns in these datasets that can be used to
+        linked to other horizon2020 datasets. Relevant joining keys include: 
+        'projectID', 'id', organisationID.
+
+        Args:
+            df_name (str): the name of the dataset to be returned. It must be one of the following:
+            ['euro_sci_voc', 'legal_basis', 'organisation', 'project', 'topics', 'web_item', 'web_link']. Defaults to 'project'.
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing project data from CORDIS - EU research.
+        """
+        horizon_2020_project_dfs = ['euro_sci_voc',
+                                                  'legal_basis',
+                                                  'organisation',
+                                                  'project',
+                                                  'topics',
+                                                  'web_item',
+                                                  'web_link']
+
+        assert df_name in horizon_2020_project_dfs, logger.error(f"Project dataset name must be one of {horizon_2020_project_dfs}")
+        return self._fetch_data(
+            f"cordis_horizon/projects/{df_name}_clean.csv")
+
+    def get_horizon2020_report_summaries(self) -> pd.DataFrame:
+        """Periodic or final publishable summaries included since September 2018
+        from CORDIS Data - EU research projects under Horizon 2020 (2014-2020).
+
+        The dataset is about projects and their results funded by
+        the European Union under the Horizon 2020 framework programme
+        for research and innovation from 2014 to 2020. This dataset is from
+        the following source:
+            https://data.europa.eu/data/datasets/cordish2020projects?locale=en
+
+        This data includes information such as:
+            - projectID: the ID of the project;
+            - title: the title of the project;
+            - attachment: path to the attachment;
+
+        There are ID columns in this dataset to link to other horizon2020 datasets:
+             get_horizon2020_iprs, get_horizon2020_project_publications,
+             get_horizon2020_project_deliverables, get_horizon2020_projects
+
+        Returns:
+            pd.DataFrame: A pandas dataframe containing report summaries since
+                September 2018.
+        """
+        return self._fetch_data("cordis_horizon/report_summaries_clean.csv")

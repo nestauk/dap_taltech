@@ -42,3 +42,22 @@ get_estonian_patents() method of dap_taltech.utils.data_getters.DataGetter insta
         - title_localized: title of the patent
         - abstract_localized: abstract of the patent
 ```
+
+## 🎨 Plotting Data
+
+If you would like to format your plots in a consistent way, you can use functions in `plotting.py` to do so. You will need to plot your data using `altair` for this to work. 
+
+```
+import dap_taltech.utils.plotting as pl
+
+#dummy example of plotting data
+graph = alt.Chart(data).mark_line().encode(
+    x='year',
+    y='count',
+    color='country'
+)
+
+pl.configure_plots(graph, 
+                   chart_title="Count over time by Country", 
+                   chart_subtitle=["This graph shows", "count over time by country"])
+```
