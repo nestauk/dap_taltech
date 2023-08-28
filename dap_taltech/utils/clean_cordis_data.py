@@ -14,10 +14,12 @@ import os
 
 from dap_taltech import BUCKET_NAME, logger
 
+# Define constants
 cordis_filepath = f"s3://{BUCKET_NAME}/data/cordis_horizon/"
 deliverables_dirname = "h2020_project_deliverables"
 project_dirname = "h2020_projects"
 
+# Mapping for renaming project files
 project_dirname_mapper = {
     'euroSciVoc': 'euro_sci_voc',
     'legalBasis': 'legal_basis',
@@ -29,7 +31,7 @@ project_dirname_mapper = {
 }
 
 if __name__ == '__main__':
-
+    # Load and clean project publications
     logger.info(
         'Loading project publications and saving without encoding/separator issues...')
     project_publications = pd.read_csv(
@@ -44,6 +46,7 @@ if __name__ == '__main__':
             'project_publications_clean.csv'),
         index=False)
     
+    # Load and clean report summaries
     logger.info(
         "Loading report summaries and saving without encoding/separator issues...")
     report_summaries = pd.read_csv(
@@ -58,6 +61,7 @@ if __name__ == '__main__':
             'report_summaries_clean.csv'),
         index=False)
     
+    # Load, merge, and clean project deliverables
     logger.info('Loading and merging project deliverables...')
     initial_project_deliverables = pd.read_csv(
         os.path.join(
@@ -85,6 +89,7 @@ if __name__ == '__main__':
             "project_deliverables_clean.csv"),
         index=False)
 
+    # Load, rename, and clean project metadata
     logger.info(
         "Loading project metadata + rename + saving without encoding/separator issues...")
     project_filenames = list(project_dirname_mapper.keys())

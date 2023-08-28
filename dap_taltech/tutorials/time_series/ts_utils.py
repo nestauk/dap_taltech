@@ -17,8 +17,7 @@ def fahrenheit_to_celcius(temp_f: Union[float, int]) -> Union[float, int]:
     if isinstance(temp_f, float):
         temp_f = temp_f*100
     
-    temp_c = (temp_f - 32) * 5/9
-    return temp_c
+    return (temp_f - 32) * 5/9
 
 def root_mean_squared_error(predictions, targets) -> float:
     """Calculate the root mean squared error 
