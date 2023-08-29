@@ -79,9 +79,16 @@ class DataGetter(object):
 
         Returns:
             pd.DataFrame: A pandas dataframe containing the data.
-        """        
+        """  
+        file_ex = file_name.split(".")[-1]
         file_path = os.path.join(self.data_dir, file_name)
-        return pd.read_parquet(file_path)
+        
+        if file_ex == 'parquet':
+            return pd.read_parquet(file_path)
+        elif file_ex == 'csv':
+            return pd.read_csv(file_path)
+        else:
+            logger.erro(f"File extension {file_ex} not supported. Please use either parquet or csv.")
 
     def get_estonian_patents(self) -> pd.DataFrame:
         """Get estonian patents data.
